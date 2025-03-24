@@ -14,10 +14,22 @@ def index():
     return render_template("index.html", weather=weather_data)
 
 def get_coordinates(city):
-    # You can use a geocoding API (like Nominatim) to get latitude and longitude
-    return 44.6464, -63.5729  # Example: Halifax, Nova Scotia
+    url = f"https://nominatim.openstreetmap.org/search"
+    params = {
+        "city": city,
+        "format": "json",
+        "limit": 1
+    }
+    
+    response = requests.get(url, params=params, headers={"User-Agent": "FlaskApp/1.0"})
+    
+    if response.status_code == 200 and response.json():
+        data = response.json()[0] 
+        return float(data["lat"]), float(data["lon"])
+    return None, None
 
 def get_weather(lat, lon):
+    """Fetch weather data for the given latitude and longitude."""
     url = f"https://api.open-meteo.com/v1/forecast?latitude={lat}&longitude={lon}&current_weather=true"
     response = requests.get(url)
     return response.json() if response.status_code == 200 else None
