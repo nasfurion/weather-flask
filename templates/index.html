@@ -12,6 +12,8 @@
     {% if weather %}
         <h2>Temperature: {{ weather['current_weather']['temperature'] }}°C</h2>
         <p>Wind Speed: {{ weather['current_weather']['windspeed'] }} km/h</p>
+        <p>Time: {{ weather['current_weather']['time'] }}</p>
+        <p>Time Zone: {{ weather['timezone'] }}</p>
     {% endif %}
 </body>
 </html>
