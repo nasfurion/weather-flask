@@ -1,6 +1,7 @@
 from flask import Flask, request, render_template
 import requests
 import os
+import json
 from datetime import datetime
 
 app = Flask(__name__)
@@ -8,6 +9,7 @@ app = Flask(__name__)
 @app.route("/", methods=["GET", "POST"])
 def index():
     weather_data = None
+    graph_data = None
     background_image = "static/Background_Images/default.png"
 
     if request.method == "POST":
@@ -18,8 +20,13 @@ def index():
             if weather_data:
                 weather_code = weather_data["current"]["weather_code"]
                 background_image = get_background_image(weather_code)
+                graph_data = {
+                    "time": weather_data["daily"]["time"],
+                    "temperature_2m_max": weather_data["daily"]["temperature_2m_max"],
+                    "temperature_2m_min": weather_data["daily"]["temperature_2m_min"],
+                }
 
-    return render_template("index.html", weather=weather_data, background_image=background_image)
+    return render_template("index.html", weather=weather_data, background_image=background_image, graph=json.dumps(graph_data))
 
 def get_coordinates(city):
     url = f"https://nominatim.openstreetmap.org/search"

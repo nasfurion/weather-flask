@@ -2,6 +2,8 @@
 <html>
 <head>
     <title>Weather App</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js"></script>
+
     <style>
         * {
             margin: 0;
@@ -68,5 +70,69 @@
             <p>Time Zone: {{ weather['timezone'] }}</p>
         {% endif %}
     </div>
+
+    <canvas id="weatherChart" width="400" height="200"></canvas>
+
+    <script>
+        // Parse the graph data passed from Flask
+        const dailyData = JSON.parse('{{ graph | safe }}');
+    
+        console.log('Weather Data:', dailyData);
+    
+        // Get the canvas context
+        const ctx = document.getElementById('weatherChart').getContext('2d');
+    
+        // Create the bar chart
+        const weatherChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: dailyData.time, // Use the time array for x-axis labels
+                datasets: [
+                    {
+                        label: 'Max Temperature (°C)',
+                        data: dailyData.temperature_2m_max, // Max temperatures
+                        backgroundColor: 'rgba(255, 99, 132, 0.6)', // Bar color
+                        borderColor: 'rgba(255, 99, 132, 1)', // Border color
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Min Temperature (°C)',
+                        data: dailyData.temperature_2m_min, // Min temperatures
+                        backgroundColor: 'rgba(54, 162, 235, 0.6)', // Bar color
+                        borderColor: 'rgba(54, 162, 235, 1)', // Border color
+                        borderWidth: 1
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                title: {
+                    display: true,
+                    text: 'Daily Temperatures'
+                },
+                scales: {
+                    xAxes: [{
+                        type: 'category', // Ensure the x-axis is treated as categories
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Date'
+                        },
+                        gridLines: {
+                            display: false // Optional: Hide grid lines for x-axis
+                        }
+                    }],
+                    yAxes: [{
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Temperature (°C)'
+                        },
+                        ticks: {
+                            beginAtZero: true // Ensure y-axis starts at 0
+                        }
+                    }]
+                }
+            }
+        });
+    </script>
 </body>
 </html>
