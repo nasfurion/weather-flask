@@ -39,10 +39,10 @@ def get_weather(lat, lon):
     if response.status_code == 200:
         data = response.json()
         # Parse the time from ISO 8601 format and convert to a readable format
-        weather_time = datetime.fromisoformat(data['current_weather']['time'])
+        weather_time = datetime.fromisoformat(data['current']['time'])
         # Format the time as YYYY-MM-DD HH:MM:SS
         formatted_time = weather_time.strftime('%Y-%m-%d %H:%M:%S')
-        data['current_weather']['formatted_time'] = formatted_time
+        data['current']['formatted_time'] = formatted_time
         return data
     return None
 
