@@ -2,18 +2,71 @@
 <html>
 <head>
     <title>Weather App</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background-image: url("{{ background_image }}");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            background: rgba(0, 0, 0, 0.6);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            width: 80%;
+            max-width: 400px;
+        }
+
+        input, button {
+            padding: 10px;
+            font-size: 16px;
+            width: 80%;
+            margin: 10px 0;
+        }
+
+        button {
+            background-color: orange;
+            border: none;
+            cursor: pointer;
+            color: white;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background-color: darkorange;
+        }
+    </style>
 </head>
 <body>
-    <h1>Check Weather</h1>
-    <form method="post">
-        <input type="text" name="city" placeholder="Enter city name">
-        <button type="submit">Get Weather</button>
-    </form>
-    {% if weather %}
-        <h2>Temperature: {{ weather['current']['temperature_2m'] }}°C</h2>
-        <p>Wind Speed: {{ weather['current']['precipitation'] }} % Chance</p>
-        <p>Time: {{ weather['current']['time'] }}</p>
-        <p>Time Zone: {{ weather['timezone'] }}</p>
-    {% endif %}
+    <div class="container">
+        <h1>Check Weather</h1>
+        <form method="post">
+            <input type="text" name="city" placeholder="Enter city name">
+            <button type="submit">Get Weather</button>
+        </form>
+
+        {% if weather %}
+            <h2>Temperature: {{ weather['current']['temperature_2m'] }}°C</h2>
+            <p>Precipitation: {{ weather['current']['precipitation'] }} % Chance</p>
+            <p>Time: {{ weather['current']['formatted_time'] }}</p>
+            <p>Time Zone: {{ weather['timezone'] }}</p>
+        {% endif %}
+    </div>
 </body>
 </html>
