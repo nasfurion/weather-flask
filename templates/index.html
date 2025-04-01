@@ -107,7 +107,7 @@
         }
     </style>
 </head>
-<body>
+<body style="flex-direction: column;">
     <div class="container">
         <h1>Check Weather</h1>
         <form method="post">
@@ -135,66 +135,129 @@
             </div>
         {% endif %}
     </div>
+    
+    {% if weather %}
 
-    <canvas id="weatherChart" width="200" height="200"></canvas>
+        <div class="chart-container">
+            <canvas id="weatherChart"></canvas>
+        </div>
+
+    {% endif %}
+
+    <style>
+        .chart-container {
+            width: 100%; /* Full width of the parent container */
+            max-width: 700px; /* Limit the maximum width */
+            height: 400px; /* Set a fixed height for the chart */
+            margin: 0 auto; /* Center the chart */
+            background-color: rgba(255, 255, 255, 0.3); /* Optional: Add a background color */
+            border-radius: 10px; /* Optional: Add rounded corners */
+            padding: 10px; /* Optional: Add padding */
+            position: relative;
+            display: inline-block;
+            margin-top: 50px; /* Space between the chart and the gallery */
+        }
+    
+        #weatherChart {
+            width: 100% !important; /* Full width of the parent container */
+            height: 100% !important; /* Full height of the parent container */
+        }
+    </style>
+    
 
     <script>
-        // Parse the graph data passed from Flask
         const dailyData = JSON.parse('{{ graph | safe }}');
     
-        console.log('Weather Data:', dailyData);
-    
-        // Get the canvas context
         const ctx = document.getElementById('weatherChart').getContext('2d');
     
-        // Create the bar chart
         const weatherChart = new Chart(ctx, {
             type: 'line',
             data: {
-                labels: dailyData.time, // Use the time array for x-axis labels
+                labels: dailyData.time,
                 datasets: [
                     {
                         label: 'Max Temperature (°C)',
-                        data: dailyData.temperature_2m_max, // Max temperatures
-                        backgroundColor: 'rgba(255, 99, 132, 0.6)', // Bar color
-                        borderColor: 'rgba(255, 99, 132, 1)', // Border color
-                        borderWidth: 1
+                        data: dailyData.temperature_2m_max,
+                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        borderWidth: 2,
+                        pointBackgroundColor: 'rgba(255, 99, 132, 1)',
+                        pointRadius: 4,
+                        fill: false
                     },
                     {
                         label: 'Min Temperature (°C)',
-                        data: dailyData.temperature_2m_min, // Min temperatures
-                        backgroundColor: 'rgba(54, 162, 235, 0.6)', // Bar color
-                        borderColor: 'rgba(54, 162, 235, 1)', // Border color
-                        borderWidth: 1
+                        data: dailyData.temperature_2m_min,
+                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 2,
+                        pointBackgroundColor: 'rgba(54, 162, 235, 1)',
+                        pointRadius: 4,
+                        fill: false
                     }
                 ]
             },
             options: {
-                responsive: true,
+                responsive: false,
+                maintainAspectRatio: false, // Allow the chart to resize dynamically
                 title: {
                     display: true,
-                    text: 'Daily Temperatures'
+                    text: 'Daily Temperatures',
+                    fontSize: 18,
+                    fontColor: '#333'
                 },
                 scales: {
                     xAxes: [{
-                        type: 'category', // Ensure the x-axis is treated as categories
+                        type: 'category',
                         scaleLabel: {
                             display: true,
-                            labelString: 'Date'
+                            labelString: 'Date',
+                            fontSize: 14,
+                            fontColor: '#333'
                         },
                         gridLines: {
-                            display: false // Optional: Hide grid lines for x-axis
+                            display: true,
+                            color: 'rgba(200, 200, 200, 0.3)'
+                        },
+                        ticks: {
+                            fontSize: 12,
+                            fontColor: '#333'
                         }
                     }],
                     yAxes: [{
                         scaleLabel: {
                             display: true,
-                            labelString: 'Temperature (°C)'
+                            labelString: 'Temperature (°C)',
+                            fontSize: 14,
+                            fontColor: '#333'
                         },
                         ticks: {
-                            beginAtZero: true // Ensure y-axis starts at 0
+                            beginAtZero: false,
+                            fontSize: 12,
+                            fontColor: '#333',
+                            callback: function(value) {
+                                return value + '°C';
+                            }
+                        },
+                        gridLines: {
+                            display: true,
+                            color: 'rgba(200, 200, 200, 0.3)'
                         }
                     }]
+                },
+                legend: {
+                    display: true,
+                    labels: {
+                        fontSize: 12,
+                        fontColor: '#333'
+                    }
+                },
+                tooltips: {
+                    callbacks: {
+                        label: function(tooltipItem, data) {
+                            return `${data.datasets[tooltipItem.datasetIndex].label}: ${tooltipItem.yLabel}°C`;
+                        }
+                    }
                 }
             }
         });
