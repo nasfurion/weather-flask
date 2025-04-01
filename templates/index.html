@@ -156,7 +156,7 @@
             max-width: 700px; /* Limit the maximum width */
             height: 400px; /* Set a fixed height for the chart */
             margin: 0 auto; /* Center the chart */
-            background-color: rgba(255, 255, 255, 0.3); /* Optional: Add a background color */
+            background-color: rgba(0, 0, 0, 0.5); /* Optional: Add a background color */
             border-radius: 10px; /* Optional: Add rounded corners */
             padding: 10px; /* Optional: Add padding */
             position: relative;
@@ -192,7 +192,6 @@
         const dailyData = JSON.parse('{{ graph | safe }}');
     
         const ctx = document.getElementById('weatherChart').getContext('2d');
-    
         const weatherChart = new Chart(ctx, {
             type: 'line',
             data: {
@@ -227,7 +226,7 @@
                     display: true,
                     text: 'Daily Temperatures',
                     fontSize: 18,
-                    fontColor: '#333'
+                    fontColor: '#fff'
                 },
                 scales: {
                     xAxes: [{
@@ -236,7 +235,7 @@
                             display: true,
                             labelString: 'Date',
                             fontSize: 14,
-                            fontColor: '#333'
+                            fontColor: '#fff'
                         },
                         gridLines: {
                             display: true,
@@ -244,7 +243,7 @@
                         },
                         ticks: {
                             fontSize: 12,
-                            fontColor: '#333'
+                            fontColor: '#fff'
                         }
                     }],
                     yAxes: [{
@@ -252,12 +251,12 @@
                             display: true,
                             labelString: 'Temperature (°C)',
                             fontSize: 14,
-                            fontColor: '#333'
+                            fontColor: '#fff'
                         },
                         ticks: {
                             beginAtZero: false,
                             fontSize: 12,
-                            fontColor: '#333',
+                            fontColor: '#fff',
                             callback: function(value) {
                                 return value + '°C';
                             }
@@ -272,7 +271,7 @@
                     display: true,
                     labels: {
                         fontSize: 12,
-                        fontColor: '#333'
+                        fontColor: '#fff'
                     }
                 },
                 tooltips: {
