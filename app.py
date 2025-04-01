@@ -27,7 +27,7 @@ def index():
                     "time": weather_data["daily"]["time"],
                     "temperature_2m_max": weather_data["daily"]["temperature_2m_max"],
                     "temperature_2m_min": weather_data["daily"]["temperature_2m_min"],
-                }
+                } 
 
                 # Map weather codes to icon filenames
                 icon_mapping = {
