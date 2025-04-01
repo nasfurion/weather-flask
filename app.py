@@ -11,12 +11,15 @@ def index():
     weather_data = None
     graph_data = None
     background_image = "static/Background_Images/default.png"
+    weather_icons = ["default.png"] * 7  # Default icon for 7-day forecast if no data
 
     if request.method == "POST":
         city = request.form["city"]
         lat, lon = get_coordinates(city)
         if lat and lon:
             weather_data = get_weather(lat, lon)
+            
+            # Check if weather_data is valid
             if weather_data:
                 weather_code = weather_data["current"]["weather_code"]
                 background_image = get_background_image(weather_code)
@@ -26,7 +29,39 @@ def index():
                     "temperature_2m_min": weather_data["daily"]["temperature_2m_min"],
                 }
 
-    return render_template("index.html", weather=weather_data, background_image=background_image, graph=json.dumps(graph_data))
+                # Map weather codes to icon filenames
+                icon_mapping = {
+                    0: "clear-sky.png",
+                    1: "partly-cloudy.png", 2: "partly-cloudy.png", 3: "partly-cloudy.png",
+                    45: "fog.png", 48: "fog.png",
+                    51: "drizzle.png", 53: "drizzle.png", 55: "drizzle.png",
+                    56: "freezing-drizzle.png", 57: "freezing-drizzle.png",
+                    61: "rain.png", 63: "rain.png", 65: "rain.png",
+                    66: "freezing-rain.png", 67: "freezing-rain.png",
+                    71: "snow.png", 73: "snow.png", 75: "snow.png", 77: "snow.png",
+                    85: "snow-grains.png", 86: "snow-grains.png",
+                    95: "thunderstorm.png", 96: "thunderstorm.png", 99: "thunderstorm.png"
+                }
+
+                # Map the 7-day forecast weather codes to their respective icons
+                weather_icons = []
+                for code in weather_data["daily"]["weather_code"]:
+                    icon = icon_mapping.get(code, "default.png")  # Default icon if no match
+                    weather_icons.append(icon)
+
+            else:
+                # If weather_data is None, set a default image or show an error
+                background_image = "static/Background_Images/error.png"
+                weather_icons = ["error.png"] * 7  # Placeholder error icon
+
+        else:
+            # Handle the case where coordinates are not found
+            background_image = "static/Background_Images/error.png"
+            weather_icons = ["error.png"] * 7  # Placeholder error icon
+
+    city_name = weather_data['timezone'].split('/')[-1] if weather_data else "Unknown City"
+
+    return render_template("index.html", weather=weather_data , city_name=city_name, background_image=background_image, graph=json.dumps(graph_data), weather_icons=weather_icons)
 
 def get_coordinates(city):
     url = f"https://nominatim.openstreetmap.org/search"
