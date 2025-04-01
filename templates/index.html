@@ -172,7 +172,6 @@
     
 
     <script>
-<<<<<<< HEAD
         // Get current day of the week as string (e.g., "Monday")
         const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
         const currentDay = new Date().getDay(); // Returns a number (0-6) corresponding to the day of the week
@@ -190,8 +189,6 @@
         });
 
         // Parse the graph data passed from Flask
-=======
->>>>>>> b4b94f9064d7f4c9ed25dedcb9ce1e8083c41697
         const dailyData = JSON.parse('{{ graph | safe }}');
     
         const ctx = document.getElementById('weatherChart').getContext('2d');
