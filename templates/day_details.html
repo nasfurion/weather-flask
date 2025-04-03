@@ -55,6 +55,7 @@
         <h1>{{city_name}}</h1>
         <h2>Date: {{weather["daily"]["time"][day_index]}}</h2>
         <p>Max Temperature: {{weather["daily"]["temperature_2m_max"][day_index]}}</p>
+        <img src="{{ url_for('static', filename='icons/' + weather_icon) }}" alt="Weather Icon" class="weather-icon">
         <p>Min Temperature: {{weather["daily"]["temperature_2m_min"][day_index]}}</p>
         <p>Sunrise: {{weather["daily"]["sunrise"][day_index]}}</p>
         <p>Sunset: {{weather["daily"]["sunset"][day_index]}}</p>

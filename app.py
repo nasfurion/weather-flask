@@ -35,25 +35,8 @@ def index():
                     "temperature_2m_min": weather_data["daily"]["temperature_2m_min"],
                 } 
 
-                # Map weather codes to icon filenames
-                icon_mapping = {
-                    0: "clear-sky.png",
-                    1: "partly-cloudy.png", 2: "partly-cloudy.png", 3: "partly-cloudy.png",
-                    45: "fog.png", 48: "fog.png",
-                    51: "drizzle.png", 53: "drizzle.png", 55: "drizzle.png",
-                    56: "freezing-drizzle.png", 57: "freezing-drizzle.png",
-                    61: "rain.png", 63: "rain.png", 65: "rain.png",
-                    66: "freezing-rain.png", 67: "freezing-rain.png",
-                    71: "snow.png", 73: "snow.png", 75: "snow.png", 77: "snow.png",
-                    85: "snow-grains.png", 86: "snow-grains.png",
-                    95: "thunderstorm.png", 96: "thunderstorm.png", 99: "thunderstorm.png"
-                }
-
-                # Map the 7-day forecast weather codes to their respective icons
-                weather_icons = []
-                for code in weather_data["daily"]["weather_code"]:
-                    icon = icon_mapping.get(code, "default.png")  # Default icon if no match
-                    weather_icons.append(icon)
+                # Use the refactored function to get weather icons
+                weather_icons = get_weather_icons(weather_data["daily"]["weather_code"])
 
             else:
                 # If weather_data is None, set a default image or show an error
@@ -106,6 +89,24 @@ def get_weather(lat, lon):
         return data
     return None
 
+def get_weather_icons(weather_codes):
+    """Returns a list of weather icons based on the provided weather codes."""
+    icon_mapping = {
+        0: "clear-sky.png",
+        1: "partly-cloudy.png", 2: "partly-cloudy.png", 3: "partly-cloudy.png",
+        45: "fog.png", 48: "fog.png",
+        51: "drizzle.png", 53: "drizzle.png", 55: "drizzle.png",
+        56: "freezing-drizzle.png", 57: "freezing-drizzle.png",
+        61: "rain.png", 63: "rain.png", 65: "rain.png",
+        66: "freezing-rain.png", 67: "freezing-rain.png",
+        71: "snow.png", 73: "snow.png", 75: "snow.png", 77: "snow.png",
+        85: "snow-grains.png", 86: "snow-grains.png",
+        95: "thunderstorm.png", 96: "thunderstorm.png", 99: "thunderstorm.png"
+    }
+
+    # Map the weather codes to their respective icons
+    return [icon_mapping.get(code, "default.png") for code in weather_codes]
+
 if __name__ == "__main__":
     app.run(debug=True)
 
@@ -113,8 +114,6 @@ if __name__ == "__main__":
 def get_background_image(weather_code):
     """Returns the appropriate background image based on the weather code."""
     image_folder = "/static/Background_Images"  # Ensure the path starts with a slash
-
-    print(f"Weather code: {weather_code}")  # Debugging line
 
     background_mapping = {
         "clear_sky.png": [0],
@@ -135,11 +134,11 @@ def get_background_image(weather_code):
             image_path = f"{image_folder}/{image}"
             return image_path if os.path.exists(image_path.lstrip('/')) else f"{image_folder}/default.png"
     
-    print(f"{image_folder}/default.png")
     return f"{image_folder}/default.png"
 
 @app.route('/day-details/<int:day_index>')
 def day_details(day_index):
     # Fetch weather details for the selected day
     background_image = get_background_image(weather_data["daily"]["weather_code"][day_index])
-    return render_template('day_details.html', weather=weather_data, day_index=day_index, city_name=city_name, background_image=background_image)
+    weather_icon = get_weather_icons([weather_data["daily"]["weather_code"][day_index]])[0]  # Get the icon for the specific day
+    return render_template('day_details.html', weather=weather_data, day_index=day_index, city_name=city_name, background_image=background_image, weather_icon=weather_icon)
