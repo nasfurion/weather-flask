@@ -5,10 +5,14 @@ import json
 from datetime import datetime
 
 app = Flask(__name__)
+latitude = None
+longitude = None
+
+weather_data = None
 
 @app.route("/", methods=["GET", "POST"])
 def index():
-    weather_data = None
+    global weather_data
     graph_data = None
     background_image = "static/Background_Images/default.png"
     weather_icons = ["default.png"] * 7  # Default icon for 7-day forecast if no data
@@ -77,7 +81,12 @@ def get_coordinates(city):
     
     if response.status_code == 200 and response.json():
         data = response.json()[0] 
+
+        latitude = data["lat"]
+        longitude = data["lon"]
+
         return float(data["lat"]), float(data["lon"])
+    
     return None, None
 
 def get_weather(lat, lon):
@@ -123,3 +132,9 @@ def get_background_image(weather_code):
             return image_path if os.path.exists(image_path) else f"{image_folder}/default.png"
 
     return f"{image_folder}/default.png"
+
+@app.route('/day-details/<int:day_index>')
+def day_details(day_index):
+    # Fetch weather details for the selected day
+    print(weather_data)
+    return render_template('day_details.html', weather=weather_data, day_index=day_index)

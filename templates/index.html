@@ -130,7 +130,7 @@
             <div class="gallery-container">
                 <div class="gallery">
                     {% for i in range(weather['daily']['time']|length) %}
-                        <div class="card">
+                        <div class="card" data-day="{{i}}">
                             <h3 id="day-{{ i }}"></h3>
                             <img src="{{ url_for('static', filename='icons/' + weather_icons[i]) }}" alt="Weather Icon" class="weather-icon">
                             <p>Max: {{ weather['daily']['temperature_2m_max'][i] }}°C</p>
@@ -282,6 +282,19 @@
                     }
                 }
             }
+        });
+    </script>
+
+    <script>
+        // Get all the cards
+        const cards = document.querySelectorAll('.card');
+
+        // Add a click event listener to each card
+        cards.forEach(card => {
+            card.addEventListener('click', () => {
+                const dayIndex = card.getAttribute('data-day'); // Get the day index from the data attribute
+                window.location.href = `/day-details/${dayIndex}`; // Redirect to the new page
+            });
         });
     </script>
 </body>
