@@ -18,6 +18,8 @@ def index():
     weather_icons = ["default.png"] * 7  # Default icon for 7-day forecast if no data
 
     if request.method == "POST":
+        global city_name 
+        city_name = request.form["city"]
         city = request.form["city"]
         lat, lon = get_coordinates(city)
         if lat and lon:
@@ -110,7 +112,9 @@ if __name__ == "__main__":
 # Function to determine background image based on weather code
 def get_background_image(weather_code):
     """Returns the appropriate background image based on the weather code."""
-    image_folder = "static/Background_Images"
+    image_folder = "/static/Background_Images"  # Ensure the path starts with a slash
+
+    print(f"Weather code: {weather_code}")  # Debugging line
 
     background_mapping = {
         "clear_sky.png": [0],
@@ -129,12 +133,13 @@ def get_background_image(weather_code):
     for image, codes in background_mapping.items():
         if weather_code in codes:
             image_path = f"{image_folder}/{image}"
-            return image_path if os.path.exists(image_path) else f"{image_folder}/default.png"
-
+            return image_path if os.path.exists(image_path.lstrip('/')) else f"{image_folder}/default.png"
+    
+    print(f"{image_folder}/default.png")
     return f"{image_folder}/default.png"
 
 @app.route('/day-details/<int:day_index>')
 def day_details(day_index):
     # Fetch weather details for the selected day
-    print(weather_data)
-    return render_template('day_details.html', weather=weather_data, day_index=day_index)
+    background_image = get_background_image(weather_data["daily"]["weather_code"][day_index])
+    return render_template('day_details.html', weather=weather_data, day_index=day_index, city_name=city_name, background_image=background_image)
