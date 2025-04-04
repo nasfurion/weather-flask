@@ -14,7 +14,7 @@ weather_data = None
 def index():
     global weather_data
     graph_data = None
-    background_image = "static/Background_Images/default.png"
+    background_image = "static/Background_Images/default.webp"
     weather_icons = ["default.png"] * 7  # Default icon for 7-day forecast if no data
 
     if request.method == "POST":
@@ -52,6 +52,16 @@ def index():
 
     return render_template("index.html", weather=weather_data , city_name=city_name, background_image=background_image, graph=json.dumps(graph_data), weather_icons=weather_icons)
 
+
+@app.route('/day-details/<int:day_index>')
+def day_details(day_index):
+    # Fetch weather details for the selected day
+    background_image = get_background_image(weather_data["daily"]["weather_code"][day_index])
+    weather_icon = get_weather_icons([weather_data["daily"]["weather_code"][day_index]])[0]  # Get the icon for the specific day
+    return render_template('day_details.html', weather=weather_data, day_index=day_index, city_name=city_name, background_image=background_image, weather_icon=weather_icon)
+
+
+
 def get_coordinates(city):
     url = f"https://nominatim.openstreetmap.org/search"
     params = {
@@ -74,6 +84,8 @@ def get_coordinates(city):
     
     return None, None
 
+
+
 def get_weather(lat, lon):
     """Fetch weather data for the given latitude and longitude."""
     url = f"https://api.open-meteo.com/v1/forecast?latitude={lat}&longitude={lon}&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,rain_sum,showers_sum,snowfall_sum,precipitation_sum,precipitation_hours&current=precipitation,weather_code,temperature_2m&timezone=auto"
@@ -88,6 +100,8 @@ def get_weather(lat, lon):
         data['current']['formatted_time'] = formatted_time
         return data
     return None
+
+
 
 def get_weather_icons(weather_codes):
     """Returns a list of weather icons based on the provided weather codes."""
@@ -107,8 +121,7 @@ def get_weather_icons(weather_codes):
     # Map the weather codes to their respective icons
     return [icon_mapping.get(code, "default.png") for code in weather_codes]
 
-if __name__ == "__main__":
-    app.run(debug=True)
+
 
 # Function to determine background image based on weather code
 def get_background_image(weather_code):
@@ -123,7 +136,7 @@ def get_background_image(weather_code):
         "freezing_drizzle.png": [56, 57],
         "rain.png": [61, 63, 65],
         "freezing_rain.png": [66, 67],
-        "snow.png": [71, 73, 75, 77],
+        "snow.jpg": [71, 73, 75, 77],
         "snow_grains.png": [85, 86],
         "thunderstorm.png": [95, 96, 99]
     }
@@ -132,13 +145,10 @@ def get_background_image(weather_code):
     for image, codes in background_mapping.items():
         if weather_code in codes:
             image_path = f"{image_folder}/{image}"
-            return image_path if os.path.exists(image_path.lstrip('/')) else f"{image_folder}/default.png"
+            return image_path if os.path.exists(image_path.lstrip('/')) else f"{image_folder}/default.webp"
     
-    return f"{image_folder}/default.png"
+    return f"{image_folder}/default.webp"
 
-@app.route('/day-details/<int:day_index>')
-def day_details(day_index):
-    # Fetch weather details for the selected day
-    background_image = get_background_image(weather_data["daily"]["weather_code"][day_index])
-    weather_icon = get_weather_icons([weather_data["daily"]["weather_code"][day_index]])[0]  # Get the icon for the specific day
-    return render_template('day_details.html', weather=weather_data, day_index=day_index, city_name=city_name, background_image=background_image, weather_icon=weather_icon)
+
+if __name__ == "__main__":
+    app.run(debug=True)
