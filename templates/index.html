@@ -8,8 +8,27 @@
         body {
             background-image: url("{{ background_image }}");
         }
+
+        .chart-container {
+            width: 100%; /* Full width of the parent container */
+            max-width: 700px; /* Limit the maximum width */
+            height: 400px; /* Set a fixed height for the chart */
+            margin: 0 auto; /* Center the chart */
+            background-color: rgba(0, 0, 0, 0.5); /* Optional: Add a background color */
+            border-radius: 10px; /* Optional: Add rounded corners */
+            padding: 10px; /* Optional: Add padding */
+            position: relative;
+            display: inline-block;
+            margin-top: 50px; /* Space between the chart and the gallery */
+        }
+    
+        #weatherChart {
+            width: 100% !important; /* Full width of the parent container */
+            height: 100% !important; /* Full height of the parent container */
+        }
     </style>
 </head>
+
 <body style="flex-direction: column;">
     <div class="container">
         <h1>Check Weather</h1>
@@ -46,26 +65,6 @@
         </div>
 
     {% endif %}
-
-    <style>
-        .chart-container {
-            width: 100%; /* Full width of the parent container */
-            max-width: 700px; /* Limit the maximum width */
-            height: 400px; /* Set a fixed height for the chart */
-            margin: 0 auto; /* Center the chart */
-            background-color: rgba(0, 0, 0, 0.5); /* Optional: Add a background color */
-            border-radius: 10px; /* Optional: Add rounded corners */
-            padding: 10px; /* Optional: Add padding */
-            position: relative;
-            display: inline-block;
-            margin-top: 50px; /* Space between the chart and the gallery */
-        }
-    
-        #weatherChart {
-            width: 100% !important; /* Full width of the parent container */
-            height: 100% !important; /* Full height of the parent container */
-        }
-    </style>
     
 
     <script>
@@ -129,8 +128,8 @@
                     xAxes: [{
                         type: 'category',
                         scaleLabel: {
-                            display: true,
-                            labelString: 'Date',
+                            display: false,
+                            labelString: 'Day of the Week',
                             fontSize: 14,
                             fontColor: '#fff'
                         },
@@ -140,7 +139,24 @@
                         },
                         ticks: {
                             fontSize: 12,
-                            fontColor: '#fff'
+                            fontColor: '#fff',
+                            callback: function(value) {
+                                // Convert the date to a day of the week
+                                const date = new Date(value);
+                                const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+                                const today = new Date();
+                                
+                                // Check if the date matches today's date
+                                if (
+                                    date.getDate() === today.getDate() &&
+                                    date.getMonth() === today.getMonth() &&
+                                    date.getFullYear() === today.getFullYear()
+                                ) {
+                                    return "Today";
+                                }
+                                
+                                return daysOfWeek[date.getDay()];
+                            }
                         }
                     }],
                     yAxes: [{
