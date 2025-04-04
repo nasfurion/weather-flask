@@ -129,15 +129,15 @@ def get_background_image(weather_code):
     image_folder = "/static/Background_Images"  # Ensure the path starts with a slash
 
     background_mapping = {
-        "clear_sky.png": [0],
+        "clear_sky.jpg": [0],
         "partly_cloudy.png": [1, 2, 3],
-        "fog.png": [45, 48],
+        "fog.jpg": [45, 48],
         "drizzle.png": [51, 53, 55],
         "freezing_drizzle.png": [56, 57],
-        "rain.png": [61, 63, 65],
+        "rain.jpg": [61, 63, 65],
         "freezing_rain.png": [66, 67],
         "snow.jpg": [71, 73, 75, 77],
-        "snow_grains.png": [85, 86],
+        "snow_grains.jpg": [85, 86],
         "thunderstorm.png": [95, 96, 99]
     }
 
