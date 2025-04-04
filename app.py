@@ -58,7 +58,20 @@ def day_details(day_index):
     # Fetch weather details for the selected day
     background_image = get_background_image(weather_data["daily"]["weather_code"][day_index])
     weather_icon = get_weather_icons([weather_data["daily"]["weather_code"][day_index]])[0]  # Get the icon for the specific day
-    return render_template('day_details.html', weather=weather_data, day_index=day_index, city_name=city_name, background_image=background_image, weather_icon=weather_icon)
+
+     # Parse the sunrise and sunset times
+    sunrise_time = weather_data["daily"]["sunrise"][day_index]
+    sunset_time = weather_data["daily"]["sunset"][day_index]
+    
+    # Convert the ISO 8601 formatted datetime string to a datetime object and extract the time
+    sunrise = datetime.fromisoformat(sunrise_time).time()
+    sunset = datetime.fromisoformat(sunset_time).time()
+
+    # Format the time as HH:MM:SS
+    formatted_sunrise = sunrise.strftime("%H:%M:%S")
+    formatted_sunset = sunset.strftime("%H:%M:%S")
+
+    return render_template('day_details.html', weather=weather_data, day_index=day_index, city_name=city_name, background_image=background_image, weather_icon=weather_icon, sunrise=formatted_sunrise, sunset=formatted_sunset)
 
 
 
