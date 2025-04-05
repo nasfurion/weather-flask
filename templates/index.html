@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Weather App</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js"></script>
+    <title>Weather Flask</title>
+    <link rel="icon" type="image/ico" href="{{ url_for('static', filename='favicon/favicon.ico') }}"/>
     <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/styles.css') }}"/>
     <style>
         body {
@@ -23,21 +23,52 @@
         }
     
         #weatherChart {
-            width: 100% !important; /* Full width of the parent container */
-            height: 100% !important; /* Full height of the parent container */
+            width: 100% !important;
+            height: 100% !important;
         }
     </style>
 </head>
 
-<body style="flex-direction: column;">
-    <div class="container">
-        <h1>Check Weather</h1>
-        <form method="post">
-            <input type="text" name="city" placeholder="Enter city name">
-            <button type="submit">Get Weather</button>
-        </form>
+<body>
+    <!-- Displays SEARCH FORM on initial load -->
+    {% if not weather %}
+    <div>
+        <h1 style="color: rgba(0, 0, 0, 0.8); font-size: 5rem; font-weight: 800; text-align: center;">Weather Flask</h1>
+        <div class="search-initial-container">
+            <form method="post" class="search-form-container">
+                <input type="text" name="city" placeholder="Enter city name" class="search-input">
+                <button type="submit" class="search-submit">Get Weather</button>
+            </form>
+        </div>
+    </div>
+    {% endif %}
 
-        {% if weather %}
+    <!-- NAVBAR search after initial search -->
+    {% if weather %}
+    <nav>
+        <h1 style="margin: 0; font-weight: 800;">
+            <img src="{{ url_for('static', filename='icons/logo.png') }}" 
+                alt="Logo" 
+                style="height: 40px; vertical-align: middle; margin-right: 10px; margin-left: 5px; margin-bottom: 3px;">
+            Weather Flask
+        </h1>
+        <form method="post" class="search-form-container">
+            <input 
+                type="search" 
+                name="city" 
+                placeholder="Enter city name" 
+                aria-label="Search for a city to see its weather" 
+                required 
+                spellcheck="true" 
+                class="search-input"
+            />
+            <button type="submit" class="search-submit">Search</button>
+        </form>
+    </nav>
+    {% endif %}
+
+    {% if weather %}
+        <div class="container">
             <h2>{{ city_name }}</h2>
             <p>{{ weather['current']['temperature_2m'] }}°</p>
             <p>H:{{ weather['daily']['temperature_2m_max'][0] }}° L:{{ weather['daily']['temperature_2m_min'][0] }}°</p>
@@ -55,18 +86,15 @@
                     {% endfor %}
                 </div>
             </div>
-        {% endif %}
-    </div>
-    
-    {% if weather %}
 
-        <div class="chart-container">
-            <canvas id="weatherChart"></canvas>
+            <!-- Temperature graph -->
+            <div class="chart-container">
+                <canvas id="weatherChart"></canvas>
+            </div>
         </div>
-
     {% endif %}
-    
 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         // Get current day of the week as string (e.g., "Monday")
         const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
