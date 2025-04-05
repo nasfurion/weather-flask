@@ -2,42 +2,34 @@
 <html>
 <head>
     <title>Day Details</title>
-    <link rel="icon" type="image/ico" href="{{ url_for('static', filename='favicon/favicon.ico') }}">/>
-    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/styles.css') }}"/>
+    <link rel="preload" href="{{ url_for('static', filename='styles/styles.css') }}" as="style" onload="this.onload=null;this.rel='stylesheet'"/>
+    <noscript><link rel="stylesheet" href="{{ url_for('static', filename='styles/styles.css') }}"/></noscript>
+    <link rel="icon" type="image/ico" href="{{ url_for('static', filename='favicon/favicon.ico') }}">
     <style>
         body {
             background-image: url("{{ background_image }}");
-        }
-        
-        h1 {
-            margin-bottom: 10px;
-            color: #FFD700;
-        }
-        
-        p {
-            font-size: 16px;
-            margin: 10px 0;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>{{city_name}}</h1>
-        <h2>Date: {{weather["daily"]["time"][day_index]}}</h2>
-        <p>Max Temperature: {{weather["daily"]["temperature_2m_max"][day_index]}}</p>
-        <img src="{{ url_for('static', filename='icons/' + weather_icon) }}" alt="Weather Icon" class="weather-icon">
-        <p>Min Temperature: {{weather["daily"]["temperature_2m_min"][day_index]}}</p>
-        <p>Sunrise: {{ sunrise }}</p>
-        <p>Sunset: {{ sunset }}</p>
-        <p>Rain (mm): {{weather["daily"]["rain_sum"][day_index]}}</p>
-        <p>Showers (mm): {{weather["daily"]["showers_sum"][day_index]}}</p>
-        <p>Snowfall (mm): {{weather["daily"]["snowfall_sum"][day_index]}}</p>
-        <p>Precipitations (mm): {{weather["daily"]["precipitation_sum"][day_index]}}</p>
-        <p>Precipitations (hours): {{weather["daily"]["precipitation_hours"][day_index]}}</p>
+        {% if weather %}
+            <h1 class="daily-header">{{city_name}}</h1>
+            <h2>Date: {{weather["daily"]["time"][day_index]}}</h2>
+
+            <div class="daily-text">
+                <p>Max Temperature: {{weather["daily"]["temperature_2m_max"][day_index]}}</p>
+                <img src="{{ url_for('static', filename='icons/' + weather_icon) }}" alt="Weather Icon" class="weather-icon">
+                <p>Min Temperature: {{weather["daily"]["temperature_2m_min"][day_index]}}</p>
+                <p>Sunrise: {{ sunrise }}</p>
+                <p>Sunset: {{ sunset }}</p>
+                <p>Rain (mm): {{weather["daily"]["rain_sum"][day_index]}}</p>
+                <p>Showers (mm): {{weather["daily"]["showers_sum"][day_index]}}</p>
+                <p>Snowfall (mm): {{weather["daily"]["snowfall_sum"][day_index]}}</p>
+                <p>Precipitations (mm): {{weather["daily"]["precipitation_sum"][day_index]}}</p>
+                <p>Precipitations (hours): {{weather["daily"]["precipitation_hours"][day_index]}}</p>
+            </div>
+        {% endif %}
     </div>
-    
-
-
-
 </body>
 </html>

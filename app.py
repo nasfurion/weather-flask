@@ -5,9 +5,9 @@ import json
 from datetime import datetime
 
 app = Flask(__name__)
+
 latitude = None
 longitude = None
-
 weather_data = None
 
 @app.route("/", methods=["GET", "POST"])
@@ -74,6 +74,14 @@ def day_details(day_index):
     return render_template('day_details.html', weather=weather_data, day_index=day_index, city_name=city_name, background_image=background_image, weather_icon=weather_icon, sunrise=formatted_sunrise, sunset=formatted_sunset)
 
 
+# caches static files to prevent flash of unstyled content on daily page
+@app.after_request
+def add_cache_headers(response):
+    """Add cache headers to static files."""
+    if request.path.startswith('/static/'):
+        response.headers['Cache-Control'] = 'public, max-age=31536000'  # Cache for 1 year
+    return response
+
 
 def get_coordinates(city):
     url = f"https://nominatim.openstreetmap.org/search"
@@ -89,10 +97,6 @@ def get_coordinates(city):
     
     if response.status_code == 200 and response.json():
         data = response.json()[0] 
-
-        latitude = data["lat"]
-        longitude = data["lon"]
-
         return float(data["lat"]), float(data["lon"])
     
     return None, None

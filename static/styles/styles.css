@@ -144,7 +144,22 @@ nav {
   position: relative;
   display: inline-block;
   margin-top: 50px;
+  background-color: rgba(0, 0, 0, 0.6);
 }
 
+#weatherChart {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.daily-header {
+  margin-bottom: 10px;
+  color: #FFD700;
+}
+
+.daily-text {
+  font-size: 16px;
+  margin: 10px 0;
+}
 
 /* TODO chart media queries */

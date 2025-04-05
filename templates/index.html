@@ -8,11 +8,6 @@
         body {
             background-image: url("{{ background_image }}");
         }
-    
-        #weatherChart {
-            width: 100% !important;
-            height: 100% !important;
-        }
     </style>
 </head>
 
@@ -83,6 +78,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
+        // ----------------- CHART JS - LINE GRAPH (TEMPERATURE)  -------------------------
         // Parse the graph data passed from Flask
         const dailyData = JSON.parse('{{ graph | safe }}');
 
@@ -124,7 +120,8 @@
             ]
         }
 
-        const white = 'rgba(250, 250, 250, 0.9)';
+        const white = 'rgba(250, 250, 250, 1)';
+        const light = 'rgba(250, 250, 250, 0.3)'
 
         // create chart object for weatherChart <canvas>
         const ctx = document.getElementById('weatherChart').getContext('2d');
@@ -137,7 +134,7 @@
                 scales: {
                     x: {
                         grid: {
-                            color: white
+                            color: light
                         },
                         ticks: {
                             color: white
@@ -145,10 +142,13 @@
                     },
                     y: {
                         grid: {
-                            color: white
+                            color: light
                         },
                         ticks: {
-                            color: white
+                            color: white,
+                            callback: function(value, index, ticks) {
+                                return `${value} °C`
+                            }
                         },
                     }
                 },
@@ -158,10 +158,18 @@
                             return `${data.datasets[tooltipItem.datasetIndex].label}: ${tooltipItem.yLabel}°C`;
                         }
                     }
+                },
+                plugins: {
+                    legend: {
+                        labels: {
+                            color: white,
+                        }
+                    }
                 }
             }
         });
     
+        // ----------------- GALLERY DAY FORMATTING  -------------------------
         // Update the gallery to display the correct day of the week (Today, Monday, etc.)
         const dayElements = document.querySelectorAll(".card h3");
         dayElements.forEach((element, index) => {
@@ -174,15 +182,15 @@
             }
         });
 
-
+        // ----------------- CARD NAVIGATION  -------------------------
         // Get all the cards
         const cards = document.querySelectorAll('.card');
 
         // Add a click event listener to each card
         cards.forEach(card => {
             card.addEventListener('click', () => {
-                const dayIndex = card.getAttribute('data-day'); // Get the day index from the data attribute
-                window.location.href = `/day-details/${dayIndex}`; // Redirect to the new page
+                const dayIndex = card.getAttribute('data-day');
+                window.location.href = `/day-details/${dayIndex}`;
             });
         });
     </script>
