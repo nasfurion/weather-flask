@@ -8,19 +8,6 @@
         body {
             background-image: url("{{ background_image }}");
         }
-
-        .chart-container {
-            width: 100%; /* Full width of the parent container */
-            max-width: 700px; /* Limit the maximum width */
-            height: 400px; /* Set a fixed height for the chart */
-            margin: 0 auto; /* Center the chart */
-            /* background-color: whitesmoke; Optional: Add a background color */
-            border-radius: 10px; /* Optional: Add rounded corners */
-            padding: 10px; /* Optional: Add padding */
-            position: relative;
-            display: inline-block;
-            margin-top: 50px; /* Space between the chart and the gallery */
-        }
     
         #weatherChart {
             width: 100% !important;
@@ -99,56 +86,70 @@
         // Parse the graph data passed from Flask
         const dailyData = JSON.parse('{{ graph | safe }}');
 
+        // Get current day of the week as string (e.g., "Sunday")
+        const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+        const currentDay = new Date().getDay(); // Returns a number (0-6) corresponding to the day of the week
+
+        // Generate labels for the next 7 days
+        const labels = [];
+        for (let i = 0; i < dailyData.time.length; i++) {
+            labels.push(daysOfWeek[(currentDay + i) % 7]); // Wrap around the week
+        }
+        
+        // Format datasets for graph
         const data = {
-            labels: dailyData.time,
-                datasets: [
-                    {
-                        label: 'Max Temperature (°C)',
-                        data: dailyData.temperature_2m_max,
-                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                        borderColor: 'rgba(255, 99, 132, 1)',
-                        borderWidth: 2,
-                        pointBackgroundColor: 'rgba(255, 99, 132, 1)',
-                        pointRadius: 4,
-                        fill: false
-                    },
-                    {
-                        label: 'Min Temperature (°C)',
-                        data: dailyData.temperature_2m_min,
-                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                        borderColor: 'rgba(54, 162, 235, 1)',
-                        borderWidth: 2,
-                        pointBackgroundColor: 'rgba(54, 162, 235, 1)',
-                        pointRadius: 4,
-                        fill: false
-                    }
-                ]
+            labels: labels,
+            datasets: [
+                {
+                    // settings for the lines
+                    label: 'Max Temperature (°C)',
+                    data: dailyData.temperature_2m_max,
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 2,
+                    pointBackgroundColor: 'rgba(255, 99, 132, 1)',
+                    pointRadius: 4,
+                    fill: false
+                },
+                {
+                    label: 'Min Temperature (°C)',
+                    data: dailyData.temperature_2m_min,
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 2,
+                    pointBackgroundColor: 'rgba(54, 162, 235, 1)',
+                    pointRadius: 4,
+                    fill: false
+                }
+            ]
         }
 
-    
+        const white = 'rgba(250, 250, 250, 0.9)';
+
+        // create chart object for weatherChart <canvas>
         const ctx = document.getElementById('weatherChart').getContext('2d');
         const weatherChart = new Chart(ctx, {
             type: 'line',
             data: data,
             options: {
-                responsive: false,
-                maintainAspectRatio: false, // Allow the chart to resize dynamically
-                title: {
-                    display: true,
-                    text: 'Daily Temperatures',
-                    fontSize: 18,
-                    fontColor: '#fff'
-                },
+                responsive: true,
+                maintainAspectRatio: true,
                 scales: {
                     x: {
                         grid: {
-                            color: 'rgba(250, 250, 250, 0.9)'
+                            color: white
+                        },
+                        ticks: {
+                            color: white
                         },
                     },
                     y: {
                         grid: {
-                            color: 'rgba(250, 250, 250, 0.9)'
-                        }
+                            color: white
+                        },
+                        ticks: {
+                            color: white
+                        },
                     }
                 },
                 tooltips: {
@@ -160,13 +161,7 @@
                 }
             }
         });
-    </script>
-
-    <script>
-        // Get current day of the week as string (e.g., "Monday")
-        const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-        const currentDay = new Date().getDay(); // Returns a number (0-6) corresponding to the day of the week
-
+    
         // Update the gallery to display the correct day of the week (Today, Monday, etc.)
         const dayElements = document.querySelectorAll(".card h3");
         dayElements.forEach((element, index) => {
