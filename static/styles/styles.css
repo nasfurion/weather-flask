@@ -23,13 +23,12 @@ body {
   padding: 20px;
   border-radius: 10px;
   text-align: center;
-  width: 100vh;
+  width: 60vh;
 }
 
 input, button {
   padding: 10px;
   font-size: 16px;
-  width: 80%;
   margin: 10px 0;
 }
 
@@ -131,7 +130,7 @@ nav {
 
 .search-submit {
   padding: 5px;
-  width: 15vh;
+  width: 10vh;
   border-radius: 5px;
 }
 
@@ -158,8 +157,11 @@ nav {
 }
 
 .daily-text {
-  font-size: 16px;
+  font-size: 50px;
+  padding: 5px;
   margin: 10px 0;
 }
 
-/* TODO chart media queries */
+.daily-text p {
+  padding: 20px;
+}

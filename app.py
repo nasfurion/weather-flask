@@ -149,7 +149,7 @@ def get_background_image(weather_code):
         "clear_sky.jpg": [0],
         "partly_cloudy.png": [1, 2, 3],
         "fog.jpg": [45, 48],
-        "drizzle.png": [51, 53, 55],
+        "drizzle.jpg": [51, 53, 55],
         "freezing_drizzle.png": [56, 57],
         "rain.jpg": [61, 63, 65],
         "freezing_rain.png": [66, 67],

@@ -2,9 +2,8 @@
 <html>
 <head>
     <title>Day Details</title>
-    <link rel="preload" href="{{ url_for('static', filename='styles/styles.css') }}" as="style" onload="this.onload=null;this.rel='stylesheet'"/>
-    <noscript><link rel="stylesheet" href="{{ url_for('static', filename='styles/styles.css') }}"/></noscript>
-    <link rel="icon" type="image/ico" href="{{ url_for('static', filename='favicon/favicon.ico') }}">
+    <link rel="icon" type="image/ico" href="{{ url_for('static', filename='favicon/favicon.ico') }}"/>
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/styles.css') }}"/>
     <style>
         body {
             background-image: url("{{ background_image }}");
@@ -14,12 +13,12 @@
 <body>
     <div class="container">
         {% if weather %}
-            <h1 class="daily-header">{{city_name}}</h1>
-            <h2>Date: {{weather["daily"]["time"][day_index]}}</h2>
+            <h1 style="font-size: 3rem; font-weight: 800; text-align: center; margin-bottom: -10px;">{{city_name}}</h1>
+            <h2 style="font-size: 2rem; font-weight: 800; text-align: center; color: orange; margin-bottom: 10px;">{{weather["daily"]["time"][day_index]}}</h2>
 
-            <div class="daily-text">
-                <p>Max Temperature: {{weather["daily"]["temperature_2m_max"][day_index]}}</p>
+            <div>
                 <img src="{{ url_for('static', filename='icons/' + weather_icon) }}" alt="Weather Icon" class="weather-icon">
+                <p>Max Temperature: {{weather["daily"]["temperature_2m_max"][day_index]}}</p>
                 <p>Min Temperature: {{weather["daily"]["temperature_2m_min"][day_index]}}</p>
                 <p>Sunrise: {{ sunrise }}</p>
                 <p>Sunset: {{ sunset }}</p>
